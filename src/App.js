@@ -3,6 +3,7 @@ import './App.css'
 import PersonsItem from './components/PersonsItem'
 import PersonsForm from './components/PersonsForm'
 import personsService from './services/persons'
+import Notification from './components/Notification'
 
 function App() {
   const [persons, setPersons] = useState([])
@@ -10,6 +11,8 @@ function App() {
   const [newName, setNewName] = useState('')
   const [filterValue, setFilterValue] = useState('')
   const [nameRepeated, setNameRepeated] = useState(null)
+  const [notificationShowed, setNotificationShowed] = useState(false)
+  const [numberChanged, setNumberChanged] = useState(null)
 
   useEffect(() => {
     let nameRepeatedFromArray = persons.find(
@@ -23,9 +26,7 @@ function App() {
     const confirm = window.confirm(`Delete ${personToDelete.name}?`)
     if (confirm) {
       personsService.deletePerson(id).then((returnedPerson) => {
-        setPersons(
-          persons.map((person) => (person.id !== id ? person : returnedPerson))
-        )
+        setPersons(persons.filter((person) => person.id !== id))
       })
     }
   }
@@ -39,7 +40,7 @@ function App() {
 
     if (nameRepeated && newNumber) {
       const id = nameRepeated.id
-      const phoneChanged = { ...nameRepeated, number: newNumber }
+      let phoneChanged = { ...nameRepeated, number: newNumber }
       const confirm = window.confirm(
         `${nameRepeated.name} is already added to phonebook, replace the old number with a new one?`
       )
@@ -51,12 +52,16 @@ function App() {
             )
           )
         })
+        setNotificationShowed(true)
+        setNumberChanged(phoneChanged)
       }
     } else if (!newName) {
       alert(`Add a name`)
     } else if (!newNumber) {
       alert(`Add a number`)
     } else {
+      setNotificationShowed(true)
+      setNumberChanged(null)
       personsService.createPerson(personObject).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
@@ -71,11 +76,23 @@ function App() {
       .then((initialPersons) => setPersons(initialPersons))
   }, [])
 
-  console.log(persons)
+  useEffect(() => {
+    setTimeout(() => {
+      if (notificationShowed) {
+        setNotificationShowed(false)
+      }
+    }, 5000)
+    // setNumberChanged(null)
+  }, [notificationShowed])
+
+  console.log(numberChanged)
 
   return (
     <div className='App'>
       <h2>Phonebook</h2>
+      {notificationShowed && (
+        <Notification persons={persons} numberChanged={numberChanged} />
+      )}
       <div>
         Filter shown with{' '}
         <input
