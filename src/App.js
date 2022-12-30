@@ -13,6 +13,7 @@ function App() {
   const [nameRepeated, setNameRepeated] = useState(null)
   const [notificationShowed, setNotificationShowed] = useState(false)
   const [numberChanged, setNumberChanged] = useState(null)
+  const [isError, setIsError] = useState(false)
 
   useEffect(() => {
     let nameRepeatedFromArray = persons.find(
@@ -45,13 +46,16 @@ function App() {
         `${nameRepeated.name} is already added to phonebook, replace the old number with a new one?`
       )
       if (confirm) {
-        personsService.updatePerson(id, phoneChanged).then((returnedPerson) => {
-          setPersons(
-            persons.map((person) =>
-              person.id !== id ? person : returnedPerson
+        personsService
+          .updatePerson(id, phoneChanged)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== id ? person : returnedPerson
+              )
             )
-          )
-        })
+          })
+          .catch(() => setIsError(true))
         setNotificationShowed(true)
         setNumberChanged(phoneChanged)
       }
@@ -85,13 +89,17 @@ function App() {
     // setNumberChanged(null)
   }, [notificationShowed])
 
-  console.log(numberChanged)
+  // console.log(numberChanged)
 
   return (
     <div className='App'>
       <h2>Phonebook</h2>
       {notificationShowed && (
-        <Notification persons={persons} numberChanged={numberChanged} />
+        <Notification
+          persons={persons}
+          numberChanged={numberChanged}
+          isError={isError}
+        />
       )}
       <div>
         Filter shown with{' '}
