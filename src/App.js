@@ -89,7 +89,7 @@ function App() {
     // setNumberChanged(null)
   }, [notificationShowed])
 
-  // console.log(numberChanged)
+  // console.log(nameRepeated)
 
   return (
     <div className='App'>
