@@ -1,6 +1,6 @@
 import axios from 'axios'
-// const baseUrl = 'http://localhost:3001/api/persons/'
-const baseUrl = 'https://fsopen-part3.vercel.app/api/persons'
+const baseUrl = 'http://localhost:3001/api/persons'
+// const baseUrl = 'https://fsopen-part3.vercel.app/api/persons'
 
 const getPersons = () => {
   const request = axios.get(baseUrl)

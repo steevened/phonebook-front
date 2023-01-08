@@ -56,6 +56,8 @@ function App() {
             )
           })
           .catch(() => setIsError(true))
+        setNewName('')
+        setNewNumber('')
         setNotificationShowed(true)
         setNumberChanged(phoneChanged)
       }
