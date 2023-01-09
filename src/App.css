@@ -1,3 +1,16 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
 li {
   list-style: none;
+}
+
+.App {
+  background-color: #222;
+  height: 100%;
+  min-height: 100vh;
+  color: #ddd;
+  font-family: 'Courier New', Courier, monospace;
 }

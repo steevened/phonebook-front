@@ -14,6 +14,9 @@ function App() {
   const [notificationShowed, setNotificationShowed] = useState(false)
   const [numberChanged, setNumberChanged] = useState(null)
   const [isError, setIsError] = useState(false)
+  const [minName, setMinName] = useState(false)
+  const [minNumber, setMinNumber] = useState(false)
+  const [numberForm, setNumberForm] = useState(false)
 
   useEffect(() => {
     let nameRepeatedFromArray = persons.find(
@@ -68,13 +71,41 @@ function App() {
     } else {
       setNotificationShowed(true)
       setNumberChanged(null)
-      personsService.createPerson(personObject).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson))
-        setNewName('')
-        setNewNumber('')
-      })
+      personsService
+        .createPerson(personObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+          setMinName(false)
+          setMinNumber(false)
+          setNumberForm(false)
+        })
+        .catch((error) => {
+          const { data } = error.response
+          if (data.includes('name: ')) {
+            setMinName(true)
+          }
+          if (data.includes('number: ')) {
+            setMinNumber(true)
+          }
+          if (!data.includes('name: ') && data.includes('number: ')) {
+            setMinName(false)
+            setMinNumber(true)
+          }
+          if (data.includes('name: ') && !data.includes('number: ')) {
+            setMinName(true)
+            setMinNumber(false)
+          }
+          if (data.includes('number: Validator')) {
+            setNumberForm(true)
+          }
+          // console.log(data)
+        })
     }
   }
+
+  console.log(numberForm)
 
   useEffect(() => {
     personsService
@@ -91,7 +122,7 @@ function App() {
     // setNumberChanged(null)
   }, [notificationShowed])
 
-  // console.log(nameRepeated)
+  // console.log(`min name: ${minName}, min number: ${minNumber}`)
 
   return (
     <div className='App'>
