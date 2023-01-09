@@ -4,6 +4,11 @@ import PersonsItem from './components/PersonsItem'
 import PersonsForm from './components/PersonsForm'
 import personsService from './services/persons'
 import Notification from './components/Notification'
+import { AppBar, Fab, Toolbar, Typography } from '@mui/material'
+import { Box } from '@mui/system'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import CssBaseline from '@mui/material/CssBaseline'
+import { Add } from '@mui/icons-material'
 
 function App() {
   const [persons, setPersons] = useState([])
@@ -105,7 +110,7 @@ function App() {
     }
   }
 
-  console.log(numberForm)
+  // console.log(numberForm)
 
   useEffect(() => {
     personsService
@@ -125,8 +130,34 @@ function App() {
   // console.log(`min name: ${minName}, min number: ${minNumber}`)
 
   return (
-    <div className='App'>
-      <h2>Phonebook</h2>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position='static'>
+          <Toolbar
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography
+              variant='h5'
+              href='/'
+              component='a'
+              sx={{
+                textDecoration: 'none',
+                color: 'inherit',
+                textAlign: 'center',
+                letterSpacing: '.3rem',
+                fontWeight: 700,
+              }}
+            >
+              Phonebook
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      </Box>
+
       {notificationShowed && (
         <Notification
           persons={persons}
@@ -170,8 +201,21 @@ function App() {
           }
         </div>
       )}
-    </div>
+      <Fab
+        size='medium'
+        color='secondary'
+        sx={{ position: 'absolute', bottom: 16, right: 16 }}
+        aria-label='add'
+      >
+        <Add />
+      </Fab>
+    </ThemeProvider>
   )
 }
 
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+})
 export default App
